@@ -1,19 +1,19 @@
 # Neil's development notes
 
-# Code Smells
+## Code Smells
 
 Code smells are signs that a refactoring is necessary. It's very important
 to get rid of code smell while they are small, because as they increase in your
 codebase, they can lead to resistance to change.
 
-# 1 - Bloaters
+## 1 - Bloaters
 
 Bloaters are classes and methods that have increased in size and complexity so
 much that they are really hard to work with. They are those classes that no one
 wants to touch and, in general, when someone has to make changes on them to fix
 a bug, many other bugs appear.
 
-# 1.1 - Long Method
+## 1.1 - Long Method
 A method that contains too many lines of code. It's easier to write code than to
 read it, as one line of code is written only once and read many times by
 different people. A long method that has more than 10 or even 5 lines of code
@@ -29,9 +29,9 @@ If extracting a method is hard, those refactoring techniques could be useful:
 - Preserve Whole Object
 
 
-# Refactoring catalog
+## Refactoring catalog
 
-## 1. Extract Method
+### 1. Extract Method
 
 Problem: You have a code fragment that can be grouped together:
 
@@ -61,7 +61,7 @@ def notify_by_email
 end
 ```
 
-## 2. Replace Temp with Query
+### 2. Replace Temp with Query
 
 Problem: You place the result of an expression in a local variable for later
 use in your code.
