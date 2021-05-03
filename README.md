@@ -1,5 +1,5 @@
 # Neil's development notes
-                                                                                
+
 # Code Smells
 
 Code smells are signs that a refactoring is necessary. It's very important
@@ -8,7 +8,7 @@ codebase, they can lead to resistance to change.
 
 # 1 - Bloaters
 
-Bloaters are classes and methods that have increased in size and complexity so  
+Bloaters are classes and methods that have increased in size and complexity so
 much that they are really hard to work with. They are those classes that no one
 wants to touch and, in general, when someone has to make changes on them to fix
 a bug, many other bugs appear.
@@ -24,7 +24,7 @@ The treatment to long methods is:
 - [Exctract Method](#1-extract-method)
 
 If extracting a method is hard, those refactoring techniques could be useful:
-- Replace Temp with Query
+- [Replace Temp with Query](#2-replace-temp-with-query)
 - Introduce Parameter Object
 - Preserve Whole Object
 
@@ -38,7 +38,7 @@ Problem: You have a code fragment that can be grouped together:
 ```ruby
 def backup_data
   ObjectStorage.new(generate_user_data_file).save
-  
+
   # Notify by e-mail
   BackupMailer.notify_user(user).deliver_later
   BackupMailer.notify_sysadmin(user).deliver_later
@@ -51,7 +51,7 @@ a call to this new method.
 ```ruby
 def backup_data
   ObjectStorage.new(generate_user_data_file).save
-  
+
   notify_by_email
 end
 
@@ -59,6 +59,38 @@ def notify_by_email
   BackupMailer.notify_user(user).deliver_later
   BackupMailer.notify_sysadmin(user).deliver_later
 end
+```
 
+## 2. Replace Temp with Query
 
+Problem: You place the result of an expression in a local variable for later
+use in your code.
+
+```ruby
+def discounted_price
+  base_price = quantity * item_price
+
+  if base_price > 1000
+    base_price * 0.95
+  else
+    base_price * 0.98
+  end
+end
+```
+
+Solution: Move the entire expression to a separate method and return its result.
+Query the method in the places you were previously using the local variable.
+
+```ruby
+def discounted_price
+  if base_price > 1000
+    base_price * 0.95
+  else
+    base_price * 0.98
+  end
+end
+
+def base_price
+  quantity * item_price
+end
 ```
