@@ -25,7 +25,7 @@ The treatment to long methods is:
 
 If extracting a method is hard, those refactoring techniques could be useful:
 - [Replace Temp with Query](#2-replace-temp-with-query)
-- Introduce Parameter Object
+- [Introduce Parameter Object](#3-introduce-parameter-object)
 - Preserve Whole Object
 
 
@@ -93,4 +93,48 @@ end
 def base_price
   quantity * item_price
 end
+```
+
+### 3. Introduce Parameter Object
+Problem: Your method contains a repeating group of parameters
+
+```ruby
+  class SalesReport
+    def amout_invoiced_in(start_date:, end_date:)
+      # ...
+    end
+
+    def amout_received_in(start_date:, end_date:)
+      # ...
+    end
+
+    def amout_overdue_in(start_date:, end_date:)
+      # ...
+    end
+  end
+```
+
+Solution: Replace these paramteres with an object
+```ruby
+  class DateRange
+    def initialize(start_date, end_date)
+      # ...
+    end
+
+    # ...
+  end
+
+  class SalesReport
+    def amout_invoiced_in(date_range)
+      # ...
+    end
+
+    def amout_received_in(date_range)
+      # ...
+    end
+
+    def amout_overdue_in(date_range)
+      # ...
+    end
+  end
 ```
