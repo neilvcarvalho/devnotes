@@ -26,7 +26,8 @@ The treatment to long methods is:
 If extracting a method is hard, those refactoring techniques could be useful:
 - [Replace Temp with Query](#2-replace-temp-with-query)
 - [Introduce Parameter Object](#3-introduce-parameter-object)
-- Preserve Whole Object
+- [Preserve Whole Object](#4-preserve-whole-object)
+- [Replace Method with Method Object](#5-replace-method-with-method-object)
 
 
 ## Refactoring catalog
@@ -164,4 +165,49 @@ class TemperatureCheck
   def within_plan?
     plan.temperature_within_range?(days_temp_range)
   end
+```
+
+### 5. Replace Method with Method Object
+Problem: You have a long method in which the local variables are so dependent
+on one another that you can't extract a method
+
+```ruby
+class Order
+  # ...
+
+  def price
+    primary_base_price = # Information from order
+    secondary_base_price = # Information from order
+    tertiary_base_price = # Information from order
+
+    # Perform long computation
+  end
+end
+```
+
+Solution: Extract the method to its own class so that you can use the local
+variables as class fields, then extract methods within the new class.
+
+```ruby
+class Order
+  # ...
+
+  def price
+    PriceCalculator.new(order).call
+  end
+end
+
+class Pricecalculator
+  def initialize(order)
+    # Copy information from order
+  end
+
+  def call
+    # Perform long computation
+  end
+
+  private
+
+  attr_accessor :primary_base_price, :secondary_base_price, :tertiary_base_price
+end
 ```
