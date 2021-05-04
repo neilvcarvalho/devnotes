@@ -99,42 +99,69 @@ end
 Problem: Your method contains a repeating group of parameters
 
 ```ruby
-  class SalesReport
-    def amout_invoiced_in(start_date:, end_date:)
-      # ...
-    end
-
-    def amout_received_in(start_date:, end_date:)
-      # ...
-    end
-
-    def amout_overdue_in(start_date:, end_date:)
-      # ...
-    end
+class SalesReport
+  def amout_invoiced_in(start_date:, end_date:)
+    # ...
   end
+
+  def amout_received_in(start_date:, end_date:)
+    # ...
+  end
+
+  def amout_overdue_in(start_date:, end_date:)
+    # ...
+  end
+end
 ```
 
 Solution: Replace these paramteres with an object
 ```ruby
-  class DateRange
-    def initialize(start_date, end_date)
-      # ...
-    end
-
+class DateRange
+  def initialize(start_date, end_date)
     # ...
   end
 
-  class SalesReport
-    def amout_invoiced_in(date_range)
-      # ...
-    end
+  # ...
+end
 
-    def amout_received_in(date_range)
-      # ...
-    end
+class SalesReport
+  def amout_invoiced_in(date_range)
+    # ...
+  end
 
-    def amout_overdue_in(date_range)
-      # ...
-    end
+  def amout_received_in(date_range)
+    # ...
+  end
+
+  def amout_overdue_in(date_range)
+    # ...
+  end
+end
+```
+
+### 4. Preserve Whole Object
+Problem: You get several values from an object and pass them as arguments to a
+method.
+
+```ruby
+class TemperatureCheck
+  # ...
+
+  def within_plan?
+    low = days_temp_range.lowest_temperature
+    high = days_temp_range.highest_temperature
+
+    plan.temperature_within_range?(low, high)
+  end
+```
+
+Solution: Try passing the whole object as an argument.
+
+```ruby
+class TemperatureCheck
+  # ...
+
+  def within_plan?
+    plan.temperature_within_range?(days_temp_range)
   end
 ```
