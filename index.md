@@ -29,6 +29,9 @@ If extracting a method is hard, those refactoring techniques could be useful:
 - [Preserve Whole Object](#4-preserve-whole-object)
 - [Replace Method with Method Object](#5-replace-method-with-method-object)
 
+For conditionals and loops:
+- [Decompose Conditional](#6-decompose-conditional)
+
 
 ## Refactoring catalog
 
@@ -209,5 +212,75 @@ class Pricecalculator
   private
 
   attr_accessor :primary_base_price, :secondary_base_price, :tertiary_base_price
+end
+```
+
+### 6. Decompose Conditional
+
+Problem: You have a complex conditional.
+
+```ruby
+def charge
+  if (date.before?(SUMMER_START) || date.after?(SUMMER_END))
+    quantity * winter_rate + winter_service_charge
+  else
+    quantity * summer_rate
+  end
+end
+```
+
+Solution:
+Decompose the complicated parts of the conditional into separate methods.
+
+```ruby
+def charge
+  if is_summer?(date)
+    summer_charge(quantity()
+  else
+    winter_charge(quantity)
+  end
+end
+
+def is_summer?(date)
+  date.before?(SUMMER_START) || date.after?(SUMMER_END)
+end
+
+def summer_charge(quantity)
+  quantity * summer_rate
+end
+
+def winter_charge(quantity)
+  quantity * winter_rate + winter_service_charge
+end
+```
+
+### 7. Extract Method (loop example)
+Problem: You have a code fragment that can be grouped together.
+
+```ruby
+def print_properties(users)
+  users.each do |user|
+    result = ""
+    result += user.name
+    result += " "
+    result += user.age
+
+    puts result
+  end
+end
+```
+
+Solution: Move this code to a separate new method and replace the old
+code with a call to the new method.
+
+```ruby
+def print_properties(users)
+  users.each do |user|
+    puts user_properties(user)
+  end
+end
+
+def user_properties(user)
+  "#{user.name} #{user.age}"
 end
 ```
