@@ -32,6 +32,15 @@ If extracting a method is hard, those refactoring techniques could be useful:
 For conditionals and loops:
 - [Decompose Conditional](#6-decompose-conditional)
 
+## 1.2 Large Class
+A class that has too many fields, methods and/or lines of code. Large classes
+tend to have too many responsibilities, violating the Single Responsibility
+Principle. They usually start small, but it's less mentally taxing to place new
+features in existing classes than to create new classes.
+
+The treatment to Large Classes are:
+- [Extract Class](#7-extract-class)
+
 
 ## Refactoring catalog
 
@@ -200,7 +209,7 @@ class Order
   end
 end
 
-class Pricecalculator
+class PriceCalculator
   def initialize(order)
     # Copy information from order
   end
@@ -283,4 +292,37 @@ end
 def user_properties(user)
   "#{user.name} #{user.age}"
 end
+```
+
+### 8. Extract Class
+Problem: You have a class with too many responsibilities.
+
+```ruby
+  class Person
+    attr_accessor :name, :office_area_code, :office_number
+
+    def formatted_office_number
+      "(#{office_area_code}) #{office_number}"
+    end
+  end
+```
+
+Solution: Create a new class and move the relevant code to the new class.
+
+```ruby
+  class Person
+    attr_accessor :name, :office_phone
+
+    def office_number
+      office_phone.number
+    end
+  end
+
+  class TelephoneNumber
+    attr_accessor :area_code, :number
+
+    def formatted_number
+      "(#{area_code}) #{number}"
+    end
+  end
 ```
