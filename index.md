@@ -39,7 +39,8 @@ Principle. They usually start small, but it's less mentally taxing to place new
 features in existing classes than to create new classes.
 
 The treatment to Large Classes are:
-- [Extract Class](#7-extract-class)
+- [Extract Class](#8-extract-class)
+- [Extract Subclass](#9-extract-subclass)
 
 
 ## Refactoring catalog
@@ -298,31 +299,70 @@ end
 Problem: You have a class with too many responsibilities.
 
 ```ruby
-  class Person
-    attr_accessor :name, :office_area_code, :office_number
+class Person
+  attr_accessor :name, :office_area_code, :office_number
 
-    def formatted_office_number
-      "(#{office_area_code}) #{office_number}"
-    end
+  def formatted_office_number
+    "(#{office_area_code}) #{office_number}"
   end
+end
 ```
 
 Solution: Create a new class and move the relevant code to the new class.
 
 ```ruby
-  class Person
-    attr_accessor :name, :office_phone
+class Person
+  attr_accessor :name, :office_phone
 
-    def office_number
-      office_phone.number
-    end
+  def office_number
+    office_phone.number
+  end
+end
+
+class TelephoneNumber
+  attr_accessor :area_code, :number
+
+  def formatted_number
+    "(#{area_code}) #{number}"
+  end
+end
+```
+
+### 9. Extract Subclass
+Problem: A class has features that are used in only a few cases.
+
+```ruby
+class Item
+  def total_price
+    # Used frequently
   end
 
-  class TelephoneNumber
-    attr_accessor :area_code, :number
-
-    def formatted_number
-      "(#{area_code}) #{number}"
-    end
+  def fuel_usage
+    # Used only when the item is a vehicle
   end
+
+  def license_plate
+    # Used only when the item is a vehicle
+  end
+end
+```
+
+Solution: Extract the rarely used features to their own subclasses.
+
+```ruby
+class Item
+  def total_price
+    # Used frequently
+  end
+end
+
+class Vehicle < Item
+  def fuel_usage
+    # Used only when the item is a vehicle
+  end
+
+  def license_plate
+    # Used only when the item is a vehicle
+  end
+end
 ```
