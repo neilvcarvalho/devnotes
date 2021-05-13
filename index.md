@@ -41,6 +41,8 @@ features in existing classes than to create new classes.
 The treatment to Large Classes are:
 - [Extract Class](#8-extract-class)
 - [Extract Subclass](#9-extract-subclass)
+- [Extract Interface](#10-extract-interface)
+- [Duplicate Observed Data](#11-duplicate-observed-data)
 
 
 ## Refactoring catalog
@@ -363,6 +365,132 @@ class Vehicle < Item
 
   def license_plate
     # Used only when the item is a vehicle
+  end
+end
+```
+
+### 10. Extract Interface
+Extracting an interface can help if it's necessary to have a list of the
+operations and behaviors that a client can use.
+
+Problem: Multiple clients are using
+the same part of a class interface, or multiple classes share the same role.
+
+Note: Ruby doesn't have `Interface` as Java does, but it's possible to use
+modules and tests to guarantee that a role is shared between classes.
+
+```ruby
+class Car
+  def accelerate
+  end
+
+  def break
+  end
+
+  def add_fuel
+  end
+
+  def add_to_trunk(item)
+  end
+end
+
+class Motocycle
+  def accelerate
+  end
+
+  def break
+  end
+
+  def add_fuel
+  end
+
+  def do_a_wheelie
+  end
+end
+```
+
+Solution:
+Move this identical portion to its own interface.
+
+```ruby
+module MotorVehicle
+  def accelerate
+  end
+
+  def break
+  end
+
+  def add_fuel
+  end
+end
+
+class Car
+  include MotorVehicle
+
+  def add_to_trunk(item)
+  end
+end
+
+class Motocycle
+  include MotorVehicle
+
+  def do_a_wheelie
+  end
+end
+```
+
+### 11. Duplicate Observed Data
+If a large class is responsible to hold data for a graphical interface, you
+can move some of this data to a separate domain object. It may be necessary to
+store copies of the same data in two places and keep the data consistent.
+
+Problem: Domain data is stored in classes responsible for the GUI.
+
+```ruby
+class IntervalWindow
+  attr_accessor :start_field, :end_field, :length_field
+
+  def start_field_focus_lost
+  end
+
+  def end_field_focus_lost
+  end
+
+  def length_field_focus_lost
+  end
+
+  def calculate_length
+  end
+
+  def calculate_end
+  end
+end
+```
+
+Solution: Separate the data into separate classes, ensuring those classes are
+linked and synchronized between the domain class and the GUI.
+
+```ruby
+class IntervalWindow
+  attr_accessor :start_field, :end_field, :length_field, :interval
+
+  def start_field_focus_lost
+  end
+
+  def end_field_focus_lost
+  end
+
+  def length_field_focus_lost
+  end
+end
+
+class Interval
+  attr_accessor :start, :end, :length
+
+  def calculate_length
+  end
+
+  def calculate_end
   end
 end
 ```
