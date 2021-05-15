@@ -59,7 +59,8 @@ The treatments to Primitive Obsession are:
 - [Preserve Whole Object](#4-preserve-whole-object)
 - [Replace Type Code with Class](#13-replace-type-code-with-class)
 - [Replace Type Code with Subclasses]
-- [Replace Type Code with State/Strategy]
+- [Replace Type Code with State/Strategy](#15-replace-type-code-with-state/strategy)
+- [Replace Array with Object](#16-replace-array-with-object)
 ## Refactoring catalog
 
 ### 1. Extract Method
@@ -578,4 +579,50 @@ class BloodGroup
 
   # ...
 end
+
+### 15. Replace Type Code with State/Strategy
+
+Problem: You have a coded type but you can't use subclasses to get rid of it.
+
+```ruby
+class Employee
+  ENGINEER = 1
+  SALESMAN = 2
+
+  attr_accessor :type
+end
+```
+
+Solution: Replace type code with a state object. If it's necessary to replace a
+field value with the type code, replace the whole state object.
+
+```ruby
+class Employee
+  attr_accessor :employee_type
+end
+
+class EmployeeType
+end
+
+class Engineer < EmployeeType
+end
+
+class Salesman < EmployeeType
+end
+```
+
+### 16. Replace Array With Object
+
+Problem: You have an array that contains various types of data. Different parts
+of the array represent something about the object.
+
+```ruby
+  performance = ["Liverpool", 15]
+```
+
+Solution: Replace the array with an object that will have separate fields for
+each element.
+
+```ruby
+  performance = Performance.new(name: "Liverpool", wins: 15)
 ```
