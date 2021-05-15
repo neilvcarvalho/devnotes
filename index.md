@@ -58,7 +58,7 @@ The treatments to Primitive Obsession are:
 - [Introduce Parameter Object](#3-introduce-parameter-object)
 - [Preserve Whole Object](#4-preserve-whole-object)
 - [Replace Type Code with Class](#13-replace-type-code-with-class)
-- [Replace Type Code with Subclasses]
+- [Replace Type Code with Subclasses](#14-replace-type-code-with-subclasses)
 - [Replace Type Code with State/Strategy](#15-replace-type-code-with-state/strategy)
 - [Replace Array with Object](#16-replace-array-with-object)
 ## Refactoring catalog
@@ -579,6 +579,36 @@ class BloodGroup
 
   # ...
 end
+```
+
+### 14. Replace Type Code with Subclasses
+
+Problem: You have a coded type that directly affects program behavior. There are
+conditionals affected by this value.
+
+```ruby
+class Employee
+  ENGINEER = 1
+  SALESMAN = 2
+
+  attr_accessor :type
+end
+```
+
+Solution: Create subclasses for each value of the coded type, then extract the
+relevant behavior associated with each type code to these subclasses. Replace
+the control flow with polymorphism.
+
+```ruby
+class Employee
+end
+
+class Engineer < Employee
+end
+
+class Salesman < Employee
+end
+```
 
 ### 15. Replace Type Code with State/Strategy
 
