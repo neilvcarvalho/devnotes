@@ -38,13 +38,28 @@ tend to have too many responsibilities, violating the Single Responsibility
 Principle. They usually start small, but it's less mentally taxing to place new
 features in existing classes than to create new classes.
 
-The treatment to Large Classes are:
+The treatments to Large Classes are:
 - [Extract Class](#8-extract-class)
 - [Extract Subclass](#9-extract-subclass)
 - [Extract Interface](#10-extract-interface)
 - [Duplicate Observed Data](#11-duplicate-observed-data)
 
 
+## 1.3 Primitive Obsession
+
+Primitive Obsession is the tendency to use primitive types instead of creating
+small classes, such as date ranges and currencies. Classes that have such fields
+have to implement all this shared behavior and become large classes over time.
+
+Primitives also tend to spread to other parts of the code as constants.
+
+The treatments to Primitive Obsession are:
+- [Replace Data Value with Object](#12-replace-data-value-with-object)
+- [Introduce Parameter Object](#3-introduce-parameter-object)
+- [Preserve Whole Object](#4-preserve-whole-object)
+- [Replace Type Code with Class](#13-replace-type-code-with-class)
+- [Replace Type Code with Subclasses]
+- [Replace Type Code with State/Strategy]
 ## Refactoring catalog
 
 ### 1. Extract Method
@@ -492,5 +507,75 @@ class Interval
 
   def calculate_end
   end
+end
+```
+
+### 12. Replace Data Value with Object
+
+It may be possible to logically group some of the primitive fields you have in
+your code to their own class - and move the behavior associated with this data
+into this class.
+
+Problem:
+A class (or group of classes) contain a data field. The field has its own
+behavior and associated data.
+
+```ruby
+class Order
+  attr_accessor :customer_name
+
+  def valid_customer_name?
+    # ...
+  end
+end
+```
+
+Solution: Create a new class and move the data and behavior associated with that
+field to the new class. Store the object of the class in the original class.
+
+```ruby
+class Order
+  attr_accessor :customer
+end
+
+class Customer
+  attr_accessor :name
+
+  def valid_name?
+    # ...
+  end
+end
+```
+
+### 13. Replace Type Code with Class
+
+Problem: A class has a field that contains a type code. The values of this type
+aren't used in operator conditions and don't affect the behavior of the program.
+
+```ruby
+class Person
+  TYPE_O = 1
+  TYPE_A = 2
+  TYPE_B = 3
+  TYPE_AB = 4
+
+  attr_accessor :bloodgroup
+end
+```
+
+Solution: Create a new class and use its objects instead of the type code values.
+
+```ruby
+class Person
+  attr_accessor :bloodgroup
+end
+
+class BloodGroup
+  TYPE_O = BloodGroup.new(significant_data_for_this_type)
+  TYPE_A = BloodGroup.new(significant_data_for_this_type)
+  TYPE_B = BloodGroup.new(significant_data_for_this_type)
+  TYPE_AB = BloodGroup.new(significant_data_for_this_type)
+
+  # ...
 end
 ```
